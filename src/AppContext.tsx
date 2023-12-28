@@ -13,8 +13,10 @@ import { db } from "./firestore";
 
 // context object structure
 type ContextType = {
+  santas: ISanta[];
   orphans: ISanta[];
   freeSantas: ISanta[];
+  notUserSantas: ISanta[];
   assignOrphan: (santaId: string, orhpanId: string) => void;
   setSantaUser: (santa: ISanta) => void;
   santaUser: ISanta | undefined;
@@ -22,8 +24,10 @@ type ContextType = {
 
 // create an empty context
 const AppContext = createContext<ContextType>({
+  santas: [],
   orphans: [],
   freeSantas: [],
+  notUserSantas: [],
   assignOrphan: () => Promise.resolve(""),
   setSantaUser: () => {},
   santaUser: undefined,
@@ -36,6 +40,11 @@ export const AppProvider = (prop: { children: React.ReactNode }) => {
 
   const orphans = useMemo(
     () => santas.filter(({ santaId, id }) => santaUser?.id !== id && !santaId),
+    [santas, santaUser],
+  );
+
+  const notUserSantas = useMemo(
+    () => santas.filter(({ id }) => santaUser?.id !== id),
     [santas, santaUser],
   );
 
@@ -63,7 +72,15 @@ export const AppProvider = (prop: { children: React.ReactNode }) => {
 
   return (
     <AppContext.Provider
-      value={{ santaUser, setSantaUser, orphans, freeSantas, assignOrphan }}
+      value={{
+        santas,
+        santaUser,
+        setSantaUser,
+        orphans,
+        freeSantas,
+        assignOrphan,
+        notUserSantas,
+      }}
     >
       {prop.children}
     </AppContext.Provider>

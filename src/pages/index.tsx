@@ -1,7 +1,7 @@
 import useApp from "@/AppContext";
 import { ANIMATION_SPEED, APP_STEP } from "@/constants";
 import { ISanta } from "@/types";
-import { Box, Center, Heading } from "@chakra-ui/react";
+import { Box, Center, Heading, Stack } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import SantaGrid from "../components/SantaGrid";
 import { delay, getStepsNum } from "@/utils";
@@ -12,13 +12,19 @@ export default function Index() {
   const [selected, setSelected] = useState<string>();
   const [selectedOrphan, setSelectedOrphan] = useState<ISanta>();
 
-  const { freeSantas, orphans, assignOrphan, setSantaUser, santaUser } =
-    useApp();
+  const {
+    freeSantas,
+    orphans,
+    assignOrphan,
+    setSantaUser,
+    santaUser,
+    notUserSantas,
+  } = useApp();
 
   const totalSteps = useMemo(() => getStepsNum(), []);
 
   useEffect(() => {
-    if (!santaUser) {
+    if (!santaUser || step !== APP_STEP.SELECTING) {
       return;
     }
 
@@ -29,26 +35,26 @@ export default function Index() {
         return;
       }
 
-      stepCounter >= totalSteps
+      stepCounter >= totalSteps && orphans.find(({ id }) => selected === id)
         ? onOrphanPicked(santaUser.id, selected)
         : pickOrphan();
     };
 
     process();
-  }, [stepCounter, santaUser]);
+  }, [stepCounter, santaUser, selected, orphans]);
 
   const pickOrphan = useCallback(async () => {
     step !== APP_STEP.SELECTING && setStep(APP_STEP.SELECTING);
 
-    const orphanId = orphans[stepCounter % orphans.length].id;
+    const orphanId = notUserSantas[stepCounter % notUserSantas.length].id;
     setSelected(orphanId);
     setStepCounter(stepCounter + 1);
   }, [stepCounter, orphans]);
 
   const onOrphanPicked = async (santaId: string, orhpanId: string) => {
     const selectedOrphan = orphans.find((orphan) => orphan.id === orhpanId);
-    await assignOrphan(santaId, orhpanId);
     setStep(APP_STEP.SELECTED);
+    await assignOrphan(santaId, orhpanId);
     setSelectedOrphan(selectedOrphan);
   };
 
@@ -83,15 +89,23 @@ export default function Index() {
                 {santaUser?.name} YOUR ORPHAN IS BEING SELECTED...
               </Heading>
             </Center>
-            <SantaGrid santas={orphans} selected={selected} disabled />
+            <SantaGrid santas={notUserSantas} selected={selected} disabled />
           </>
         )}
 
         {step === APP_STEP.SELECTED && (
           <Center mb="1.5em">
-            <Heading color="green.400">
-              {santaUser?.name}, YOUR ORPHAN IS {selectedOrphan?.name}...
-            </Heading>
+            <Stack align="center" gap="1em">
+              <Heading size="4xl" color="black">
+                {santaUser?.name.toUpperCase()}
+              </Heading>
+              <Heading color="green.400" size="2xl">
+                YOUR ORPHAN IS
+              </Heading>
+              <Heading size="4xl" color="black">
+                {selectedOrphan?.name}
+              </Heading>
+            </Stack>
           </Center>
         )}
       </Box>
