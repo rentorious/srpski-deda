@@ -1,0 +1,44 @@
+[
+  {
+    "id": "0",
+    "name": "Ognjen",
+    "childId": null,
+    "santaId": null
+  },
+  {
+    "id": "1",
+    "name": "Ziva",
+    "childId": null,
+    "santaId": null
+  },
+  {
+    "id": "2",
+    "name": "Andrej",
+    "childId": null,
+    "santaId": null
+  },
+  {
+    "id": "3",
+    "name": "Momcilo",
+    "childId": null,
+    "santaId": null
+  },
+  {
+    "id": "4",
+    "name": "Malina",
+    "childId": null,
+    "santaId": null
+  },
+  {
+    "id": "5",
+    "name": "Luka",
+    "childId": null,
+    "santaId": null
+  },
+  {
+    "id": "6",
+    "name": "Masa",
+    "childId": null,
+    "santaId": null
+  }
+]
