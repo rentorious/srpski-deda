@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "turbo vite.build",
+    "build": "vite build",
     "dev": "turbo vite.dev",
     "lint": "tsc",
     "prepare": "is-ci || husky install",
