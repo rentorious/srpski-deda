@@ -12,7 +12,7 @@ export default function App() {
       <ChakraProvider>
         <Outlet />
         <ScrollRestoration />
-        <ControlPanel />
+        {/* <ControlPanel /> */}
       </ChakraProvider>
     </AppProvider>
   );
